@@ -1,6 +1,6 @@
 # 🚀 **IAM Cross Account Access Users**  
 
-![AWS Logo](https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg)  
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" width="200" height="100">  
 
 ## 📖 **Description**  
 This project demonstrates cross-account IAM configuration in AWS using three separate AWS accounts. The accounts are referred to as **Account A**, **Account B**, and **Account C**. Below are the deployment details for each account:  
