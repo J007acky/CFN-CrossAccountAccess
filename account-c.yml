@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This is a Template used for deploying S3 Bucket
+
+Parameters:
+  AccountAId:
+    Description: Enter Account ID for account-A
+    Type: String
+    Default: 010438467788
+
+  AccountBId:
+    Description: Enter Account ID for account-B
+    Type: String
+    Default: 891377219026
+
+  RoleToGiveAccess:
+    Description: Enter Account-B's Role whom to give access
+    Type: String
+    Default: bat-licence-to-put  
+
+Resources:
+  taskBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: contingency-plan-task-bucket
+
+  BucketAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: This is the Bat-License-To-Put Role
+      RoleName: bat-licence-to-put-account-c
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal: 
+              AWS : !Sub arn:aws:iam::${AccountBId}:role/${RoleToGiveAccess}
+      Policies:
+        - PolicyName: Ec2AssumeRolePolicy      
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - s3:Get*
+                  - s3:List*
+                Resource: "*"
+
+  adminClarkRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AdminClarkRole
+      Description: This is the role for Admin Access to Clark User
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AccountAId}:user/Clark"
+      Policies:
+        - PolicyName: AdminRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "*"
+                Resource: "*"
+
+
+Outputs:
+  bucketId:
+    Description: This is the task bucket id
+    Value: !Ref taskBucket

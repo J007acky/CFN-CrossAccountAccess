@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: This is the Template for Accout-A for CFN Task
+
+Parameters:
+  brucePassword:
+    Description: Enter Password for User Bruce
+    Type: String
+    Default: Bruce@123
+  clarkPassword:
+    Description: Enter Password for User Clark
+    Type: String
+    Default: Clark@123
+
+Resources:
+  userBruce:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: Bruce
+      LoginProfile:
+        Password: !Ref brucePassword
+        PasswordResetRequired: "False"
+      Policies:
+        - PolicyName: BruceAssumePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: sts:AssumeRole
+                Resource: "*"
+  userClark:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - admin
+      UserName: Clark
+      LoginProfile:
+        Password: !Ref clarkPassword
+        PasswordResetRequired: "False"
+
+Outputs:
+  bruceId:
+    Description: This is the Id for User Bruce
+    Value: !Ref userBruce
+  clarkId:
+    Description: This is the Id for User Clark
+    Value: !Ref userClark

@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This is a Template used for deploying S3 Bucket
+
+Resources:
+  taskBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: contingency-plan-task-bucket
+
+Outputs:
+  bucketId:
+    Description: This is the task bucket id
+    Value: !Ref taskBucket

@@ -1,0 +1,84 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This is the CloudFormation template to deploy resources on Account B
+
+Parameters:
+  AccountAId:
+    Description: Enter Account ID for account-A
+    Type: String
+    Default: 010438467788
+
+Resources:
+  batLicenseRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: This is the Bat-License-To-Put Role
+      RoleName: bat-licence-to-put
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: ec2.amazonaws.com
+      Policies:
+        - PolicyName: Ec2AssumeRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: sts:AssumeRole
+                Resource: "*"
+  batLicenseInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles: 
+        - Ref: batLicenseRole
+
+  UserRoleBruce:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: role-for-bruce-user
+      Description: This is the Role for Bruce user to read/write in EC2 Instance and to attach role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AccountAId}:user/Bruce"
+      Policies:
+        - PolicyName: AllowGetPassRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: ec2:*
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - iam:GetRole
+                  - iam:PassRole
+                  - iam:ListInstanceProfiles 
+                Resource: "*"
+
+  adminClarkRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AdminClarkRole
+      Description: This is the role for Admin Access to Clark User
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AccountAId}:user/Clark"
+      Policies:
+        - PolicyName: AdminRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "*"
+                Resource: "*"
